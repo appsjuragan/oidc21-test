@@ -1,0 +1,19 @@
+[package]
+name = "authentication"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+# Workspace dependencies
+serde = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+argon2 = { workspace = true }
+rand = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+totp-rs = { workspace = true }
+reqwest = { workspace = true }
+
+# Additional
+zxcvbn = "2.2"  # Password strength estimation

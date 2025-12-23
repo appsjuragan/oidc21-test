@@ -1,0 +1,715 @@
+{
+  "info": {
+    "name": "OIDC 2.1 SSO Backend",
+    "description": "Complete API collection for testing the OIDC 2.1 authorization server with OAuth flows, MFA, and session management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health & Discovery",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check server health and database/Redis connectivity"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Health check passes', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql('healthy');",
+                  "    pm.expect(jsonData.database).to.eql('ok');",
+                  "    pm.expect(jsonData.redis).to.eql('ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "OpenID Configuration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/.well-known/openid-configuration",
+              "host": ["{{base_url}}"],
+              "path": [".well-known", "openid-configuration"]
+            },
+            "description": "Get OpenID Connect discovery document"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Has required OIDC endpoints', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('authorization_endpoint');",
+                  "    pm.expect(jsonData).to.have.property('token_endpoint');",
+                  "    pm.expect(jsonData).to.have.property('userinfo_endpoint');",
+                  "    pm.expect(jsonData).to.have.property('jwks_uri');",
+                  "});",
+                  "",
+                  "pm.test('Only supports authorization code flow', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.response_types_supported).to.include('code');",
+                  "    pm.expect(jsonData.response_types_supported).to.not.include('token');",
+                  "});",
+                  "",
+                  "pm.test('PKCE is required (S256)', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.code_challenge_methods_supported).to.include('S256');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "JWKS (Public Keys)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jwks",
+              "host": ["{{base_url}}"],
+              "path": ["jwks"]
+            },
+            "description": "Get JSON Web Key Set for token verification"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Has RSA keys', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.keys).to.be.an('array');",
+                  "    pm.expect(jsonData.keys.length).to.be.above(0);",
+                  "    pm.expect(jsonData.keys[0].kty).to.eql('RSA');",
+                  "    pm.expect(jsonData.keys[0].alg).to.eql('RS256');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication",
+      "item": [
+        {
+          "name": "Login (Password Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with email and password. Returns session token or MFA challenge."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Response has user_id', function () {",
+                  "    pm.expect(jsonData).to.have.property('user_id');",
+                  "});",
+                  "",
+                  "if (!jsonData.requires_mfa) {",
+                  "    pm.test('Session token provided', function () {",
+                  "        pm.expect(jsonData.session_token).to.be.a('string');",
+                  "        pm.expect(jsonData.session_token.length).to.be.above(0);",
+                  "    });",
+                  "    ",
+                  "    // Save session token for later use",
+                  "    pm.environment.set('session_token', jsonData.session_token);",
+                  "} else {",
+                  "    pm.test('MFA required', function () {",
+                  "        pm.expect(jsonData.requires_mfa).to.be.true;",
+                  "        pm.expect(jsonData.mfa_methods).to.be.an('array');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (with MFA)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\",\n  \"mfa_code\": \"{{mfa_code}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with email, password, and MFA code (TOTP)"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_token\": \"{{session_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Logout and invalidate session"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. OAuth 2.1 - Authorization Code Flow",
+      "item": [
+        {
+          "name": "Step 1: Generate PKCE",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "This is a dummy request. See Pre-request Script to generate PKCE values."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Generate PKCE code verifier (43-128 characters)",
+                  "function generateCodeVerifier() {",
+                  "    const array = new Uint8Array(32);",
+                  "    crypto.getRandomValues(array);",
+                  "    return base64UrlEncode(array);",
+                  "}",
+                  "",
+                  "// Base64-URL encode",
+                  "function base64UrlEncode(buffer) {",
+                  "    const base64 = btoa(String.fromCharCode.apply(null, buffer));",
+                  "    return base64",
+                  "        .replace(/\\+/g, '-')",
+                  "        .replace(/\\//g, '_')",
+                  "        .replace(/=/g, '');",
+                  "}",
+                  "",
+                  "// Generate SHA-256 hash",
+                  "async function sha256(plain) {",
+                  "    const encoder = new TextEncoder();",
+                  "    const data = encoder.encode(plain);",
+                  "    const hash = await crypto.subtle.digest('SHA-256', data);",
+                  "    return new Uint8Array(hash);",
+                  "}",
+                  "",
+                  "// Generate code challenge from verifier",
+                  "async function generateCodeChallenge(verifier) {",
+                  "    const hashed = await sha256(verifier);",
+                  "    return base64UrlEncode(hashed);",
+                  "}",
+                  "",
+                  "// Generate and store PKCE values",
+                  "(async () => {",
+                  "    const verifier = generateCodeVerifier();",
+                  "    const challenge = await generateCodeChallenge(verifier);",
+                  "    ",
+                  "    pm.environment.set('code_verifier', verifier);",
+                  "    pm.environment.set('code_challenge', challenge);",
+                  "    pm.environment.set('code_challenge_method', 'S256');",
+                  "    ",
+                  "    console.log('PKCE Verifier:', verifier);",
+                  "    console.log('PKCE Challenge:', challenge);",
+                  "})()",
+                  "",
+                  "// Generate random state for CSRF protection",
+                  "const state = Array.from(crypto.getRandomValues(new Uint8Array(16)))",
+                  "    .map(b => b.toString(16).padStart(2, '0'))",
+                  "    .join('');",
+                  "pm.environment.set('oauth_state', state);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 2: Authorization Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=openid profile email&state={{oauth_state}}&code_challenge={{code_challenge}}&code_challenge_method=S256",
+              "host": ["{{base_url}}"],
+              "path": ["authorize"],
+              "query": [
+                {
+                  "key": "response_type",
+                  "value": "code"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{client_id}}"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "{{redirect_uri}}"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "state",
+                  "value": "{{oauth_state}}"
+                },
+                {
+                  "key": "code_challenge",
+                  "value": "{{code_challenge}}"
+                },
+                {
+                  "key": "code_challenge_method",
+                  "value": "S256"
+                }
+              ]
+            },
+            "description": "Step 2: Make authorization request. This will redirect to login if not authenticated. Manually extract 'code' from redirect URL and save to environment variable 'auth_code'."
+          },
+          "response": []
+        },
+        {
+          "name": "Step 3: Token Exchange",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "text"
+                },
+                {
+                  "key": "code",
+                  "value": "{{auth_code}}",
+                  "type": "text",
+                  "description": "Authorization code from redirect"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "{{redirect_uri}}",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{client_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "code_verifier",
+                  "value": "{{code_verifier}}",
+                  "type": "text",
+                  "description": "PKCE verifier from Step 1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/token",
+              "host": ["{{base_url}}"],
+              "path": ["token"]
+            },
+            "description": "Exchange authorization code for access and refresh tokens"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has access token', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('access_token');",
+                  "    pm.expect(jsonData).to.have.property('token_type');",
+                  "    pm.expect(jsonData.token_type).to.eql('Bearer');",
+                  "});",
+                  "",
+                  "pm.test('Response has refresh token', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('refresh_token');",
+                  "});",
+                  "",
+                  "// Save tokens for later use",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set('access_token', jsonData.access_token);",
+                  "pm.environment.set('refresh_token', jsonData.refresh_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Token Operations",
+      "item": [
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "refresh_token",
+                  "type": "text"
+                },
+                {
+                  "key": "refresh_token",
+                  "value": "{{refresh_token}}",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{client_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/token",
+              "host": ["{{base_url}}"],
+              "path": ["token"]
+            },
+            "description": "Use refresh token to get new access token. Old refresh token is rotated."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('New access token provided', function () {",
+                  "    pm.expect(jsonData.access_token).to.be.a('string');",
+                  "    pm.expect(jsonData.access_token.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test('Refresh token rotated', function () {",
+                  "    pm.expect(jsonData.refresh_token).to.be.a('string');",
+                  "    pm.expect(jsonData.refresh_token).to.not.eql(pm.environment.get('refresh_token'));",
+                  "});",
+                  "",
+                  "// Update tokens",
+                  "pm.environment.set('access_token', jsonData.access_token);",
+                  "pm.environment.set('refresh_token', jsonData.refresh_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Client Credentials Grant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{client_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{client_secret}}",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "api.read api.write",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/token",
+              "host": ["{{base_url}}"],
+              "path": ["token"]
+            },
+            "description": "Get access token using client credentials (machine-to-machine). No refresh token issued."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Access token provided', function () {",
+                  "    pm.expect(jsonData.access_token).to.be.a('string');",
+                  "});",
+                  "",
+                  "pm.test('No refresh token (as per spec)', function () {",
+                  "    pm.expect(jsonData.refresh_token).to.be.undefined;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Token Introspection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Authorization",
+                "value": "Basic {{client_credentials_base64}}",
+                "description": "Base64(client_id:client_secret)"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "text"
+                },
+                {
+                  "key": "token_type_hint",
+                  "value": "access_token",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/introspect",
+              "host": ["{{base_url}}"],
+              "path": ["introspect"]
+            },
+            "description": "Check if token is active and get metadata (RFC 7662)"
+          },
+          "response": []
+        },
+        {
+          "name": "Token Revocation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Authorization",
+                "value": "Basic {{client_credentials_base64}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "text"
+                },
+                {
+                  "key": "token_type_hint",
+                  "value": "access_token",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/revoke",
+              "host": ["{{base_url}}"],
+              "path": ["revoke"]
+            },
+            "description": "Revoke access or refresh token (RFC 7009). Always returns 200 OK."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. OIDC - UserInfo",
+      "item": [
+        {
+          "name": "Get UserInfo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/userinfo",
+              "host": ["{{base_url}}"],
+              "path": ["userinfo"]
+            },
+            "description": "Get user claims based on granted scopes. Implements GDPR data minimization."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has subject', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('sub');",
+                  "});",
+                  "",
+                  "pm.test('Claims match requested scopes', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    ",
+                  "    // If profile scope granted, should have name",
+                  "    // If email scope granted, should have email",
+                  "    // Only includes claims for granted scopes (GDPR)",
+                  "    console.log('UserInfo claims:', jsonData);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
