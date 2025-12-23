@@ -1,0 +1,282 @@
+﻿cargo :     Updating crates.io index
+At line:1 char:1
++ cargo build --workspace 2>&1 | Out-File -Encoding UTF8 workspace_buil ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Updating crates.io index:String) [], Remot 
+   eException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+     Locking 4 packages to latest compatible versions
+      Adding axum-extra v0.9.6 (available: v0.12.3)
+      Adding headers v0.4.1
+      Adding headers-core v0.3.0
+      Adding multer v3.1.0
+ Downloading crates ...
+  Downloaded headers-core v0.3.0
+  Downloaded headers v0.4.1
+  Downloaded axum-extra v0.9.6
+  Downloaded multer v3.1.0
+   Compiling fastrand v2.3.0
+   Compiling multer v3.1.0
+   Compiling headers-core v0.3.0
+   Compiling spin v0.9.8
+   Compiling headers v0.4.1
+   Compiling tempfile v3.23.0
+   Compiling sqlx-macros-core v0.7.4
+   Compiling axum-extra v0.9.6
+   Compiling sqlx-macros v0.7.4
+   Compiling sqlx v0.7.4
+   Compiling users v0.1.0 (D:\projects\rust-oidc-sso\crates\users)
+   Compiling authentication v0.1.0 (D:\projects\rust-oidc-sso\crates\authentication)
+   Compiling audit v0.1.0 (D:\projects\rust-oidc-sso\crates\audit)
+   Compiling clients v0.1.0 (D:\projects\rust-oidc-sso\crates\clients)
+warning: unused import: `base64::Engine`
+ --> crates\authentication\src\mfa.rs:2:5
+  |
+2 | use base64::Engine;
+  |     ^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:157:5
+    |
+157 |     pub async fn touch_session(&mut self, session_token: &str) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:170:18
+    |
+170 |                 .set_ex(&session_key, session_json, remaining_seconds as u64)
+    |                  ^^^^^^
+    = note: `#[warn(dependency_on_unit_never_type_fallback)]` (part of 
+`#[warn(rust_2024_compatibility)]`) on by default
+help: use `()` annotations to avoid fallback changes
+    |
+170 |                 .set_ex::<_, _, ()>(&session_key, session_json, remaining_seconds as 
+u64)
+    |                        ++++++++++++
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:178:5
+    |
+178 |     pub async fn delete_session(&mut self, session_token: &str) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:186:29
+    |
+186 |                  self.redis.srem(&user_sessions_key, session_token).await?;
+    |                             ^^^^
+help: use `()` annotations to avoid fallback changes
+    |
+186 ~                  self.redis.srem::<_, _, ()>(&user_sessions_key, 
+session_token).await?;
+187 |              }
+188 |         }
+189 |
+190 ~         self.redis.del::<_, ()>(&session_key).await?;
+    |
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:196:5
+    |
+196 |     pub async fn delete_all_user_sessions(&mut self, user_id: Uuid) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:203:24
+    |
+203 |             self.redis.del(&session_key).await?;
+    |                        ^^^
+help: use `()` annotations to avoid fallback changes
+    |
+203 ~             self.redis.del::<_, ()>(&session_key).await?;
+204 |         }
+205 |         
+206 ~         self.redis.del::<_, ()>(&user_sessions_key).await?;
+    |
+
+warning: `authentication` (lib) generated 4 warnings (run `cargo fix --lib -p 
+authentication` to apply 4 suggestions)
+   Compiling auth-server v0.1.0 (D:\projects\rust-oidc-sso\crates\auth-server)
+warning: unused import: `Serialize`
+ --> crates\auth-server\src\routes\authorize.rs:2:26
+  |
+2 | use serde::{Deserialize, Serialize};
+  |                          ^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `http::StatusCode`
+ --> crates\auth-server\src\routes\token.rs:1:28
+  |
+1 | use axum::{extract::State, http::StatusCode, Json};
+  |                            ^^^^^^^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\token.rs:9:27
+  |
+9 | use audit::{ AuditLogger, EventType};
+  |                           ^^^^^^^^^
+
+warning: unused imports: `StatusCode` and `header`
+ --> crates\auth-server\src\routes\userinfo.rs:3:12
+  |
+3 |     http::{header, StatusCode},
+  |            ^^^^^^  ^^^^^^^^^^
+
+warning: unused import: `std::net::IpAddr`
+ --> crates\auth-server\src\routes\login.rs:3:5
+  |
+3 | use std::net::IpAddr;
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused import: `uuid::Uuid`
+ --> crates\auth-server\src\routes\login.rs:4:5
+  |
+4 | use uuid::Uuid;
+  |     ^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\login.rs:7:26
+  |
+7 | use audit::{AuditLogger, EventType};
+  |                          ^^^^^^^^^
+
+warning: unused import: `authorize::*`
+  --> crates\auth-server\src\routes\mod.rs:12:9
+   |
+12 | pub use authorize::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `token::*`
+  --> crates\auth-server\src\routes\mod.rs:13:9
+   |
+13 | pub use token::*;
+   |         ^^^^^^^^
+
+warning: unused import: `userinfo::*`
+  --> crates\auth-server\src\routes\mod.rs:14:9
+   |
+14 | pub use userinfo::*;
+   |         ^^^^^^^^^^^
+
+warning: unused import: `jwks::*`
+  --> crates\auth-server\src\routes\mod.rs:15:9
+   |
+15 | pub use jwks::*;
+   |         ^^^^^^^
+
+warning: unused import: `discovery::*`
+  --> crates\auth-server\src\routes\mod.rs:16:9
+   |
+16 | pub use discovery::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `revoke::*`
+  --> crates\auth-server\src\routes\mod.rs:17:9
+   |
+17 | pub use revoke::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `introspect::*`
+  --> crates\auth-server\src\routes\mod.rs:18:9
+   |
+18 | pub use introspect::*;
+   |         ^^^^^^^^^^^^^
+
+warning: unused import: `health::*`
+  --> crates\auth-server\src\routes\mod.rs:19:9
+   |
+19 | pub use health::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `login::*`
+  --> crates\auth-server\src\routes\mod.rs:20:9
+   |
+20 | pub use login::*;
+   |         ^^^^^^^^
+
+error[E0382]: borrow of partially moved value: `client`
+   --> crates\auth-server\src\routes\token.rs:325:41
+    |
+319 |     let secret_hash = client.client_secret_hash
+    |                       ------------------------- help: consider calling `.as_ref()` or 
+`.as_mut()` to borrow the type's contents
+320 |         .ok_or_else(|| AppError::Unauthorized("Public clients cannot use 
+client_credentials grant".to_string()))?;
+    |          -----------------------------------------------------------------------------
+-------------------------- `client.client_secret_hash` partially moved due to this method 
+call
+...
+325 |     if !client_repo.validate_grant_type(&client, "client_credentials") {
+    |                                         ^^^^^^^ value borrowed here after partial move
+    |
+note: `std::option::Option::<T>::ok_or_else` takes ownership of the receiver `self`, which 
+moves `client.client_secret_hash`
+   --> /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\option.rs:1357:35
+    = note: partial move occurs because `client.client_secret_hash` has type 
+`std::option::Option<std::string::String>`, which does not implement the `Copy` trait
+help: you can `clone` the value and consume it, but this might not be your desired behavior
+    |
+319 |     let secret_hash = client.client_secret_hash.clone()
+    |                                                ++++++++
+
+error[E0382]: borrow of moved value: `audit_logger`
+   --> crates\auth-server\src\routes\login.rs:116:13
+    |
+ 41 |     let audit_logger = AuditLogger::new(state.db.clone());
+    |         ------------ move occurs because `audit_logger` has type `AuditLogger`, which 
+does not implement the `Copy` trait
+...
+ 48 |         .ok_or_else(|| {
+    |                     -- value moved into closure here
+...
+ 51 |                 let _ = audit_logger.log_login_failure(
+    |                         ------------ variable moved due to use in closure
+...
+116 |             audit_logger
+    |             ^^^^^^^^^^^^ value borrowed here after move
+
+error[E0382]: borrow of moved value: `request.email`
+   --> crates\auth-server\src\routes\login.rs:117:36
+    |
+ 48 |         .ok_or_else(|| {
+    |                     -- value moved into closure here
+...
+ 52 |                     &request.email,
+    |                      ------------- variable moved due to use in closure
+...
+117 |                 .log_login_failure(&request.email, "Invalid MFA code", None, None)
+    |                                    ^^^^^^^^^^^^^^ value borrowed here after move
+    |
+    = note: move occurs because `request.email` has type `std::string::String`, which does 
+not implement the `Copy` trait
+    = note: borrow occurs due to deref coercion to `str`
+
+For more information about this error, try `rustc --explain E0382`.
+warning: `auth-server` (bin "auth-server") generated 16 warnings
+error: could not compile `auth-server` (bin "auth-server") due to 3 previous errors; 16 
+warnings emitted

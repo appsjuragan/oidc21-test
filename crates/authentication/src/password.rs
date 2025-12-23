@@ -115,7 +115,7 @@ pub fn validate_password(password: &str, config: &PasswordConfig) -> Result<(), 
 /// # Returns
 /// Ok(()) if not breached, Err if found in breaches
 pub async fn check_password_breach(password: &str) -> Result<(), PasswordError> {
-    use sha2::{Digest, Sha1};
+    use sha1::{Digest, Sha1};
     
     // SHA1 hash of password
     let mut hasher = Sha1::new();

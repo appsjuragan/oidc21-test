@@ -1,0 +1,385 @@
+﻿cargo :    Compiling authentication v0.1.0 (D:\projects\rust-oidc-sso\crates\authentication)
+At line:1 char:1
++ cargo build --workspace 2>&1 | Out-File -Encoding UTF8 workspace_buil ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling au...authentication):String) [],  
+   RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   Compiling audit v0.1.0 (D:\projects\rust-oidc-sso\crates\audit)
+   Compiling users v0.1.0 (D:\projects\rust-oidc-sso\crates\users)
+   Compiling clients v0.1.0 (D:\projects\rust-oidc-sso\crates\clients)
+warning: unused import: `base64::Engine`
+ --> crates\authentication\src\mfa.rs:2:5
+  |
+2 | use base64::Engine;
+  |     ^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:157:5
+    |
+157 |     pub async fn touch_session(&mut self, session_token: &str) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:170:18
+    |
+170 |                 .set_ex(&session_key, session_json, remaining_seconds as u64)
+    |                  ^^^^^^
+    = note: `#[warn(dependency_on_unit_never_type_fallback)]` (part of 
+`#[warn(rust_2024_compatibility)]`) on by default
+help: use `()` annotations to avoid fallback changes
+    |
+170 |                 .set_ex::<_, _, ()>(&session_key, session_json, remaining_seconds as 
+u64)
+    |                        ++++++++++++
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:178:5
+    |
+178 |     pub async fn delete_session(&mut self, session_token: &str) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:186:29
+    |
+186 |                  self.redis.srem(&user_sessions_key, session_token).await?;
+    |                             ^^^^
+help: use `()` annotations to avoid fallback changes
+    |
+186 ~                  self.redis.srem::<_, _, ()>(&user_sessions_key, 
+session_token).await?;
+187 |              }
+188 |         }
+189 |
+190 ~         self.redis.del::<_, ()>(&session_key).await?;
+    |
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:196:5
+    |
+196 |     pub async fn delete_all_user_sessions(&mut self, user_id: Uuid) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:203:24
+    |
+203 |             self.redis.del(&session_key).await?;
+    |                        ^^^
+help: use `()` annotations to avoid fallback changes
+    |
+203 ~             self.redis.del::<_, ()>(&session_key).await?;
+204 |         }
+205 |         
+206 ~         self.redis.del::<_, ()>(&user_sessions_key).await?;
+    |
+
+warning: `authentication` (lib) generated 4 warnings (run `cargo fix --lib -p 
+authentication` to apply 4 suggestions)
+   Compiling auth-server v0.1.0 (D:\projects\rust-oidc-sso\crates\auth-server)
+error: error returned from database: password authentication failed for user "oidc_user"
+   --> crates\auth-server\src\routes\token.rs:223:25
+    |
+223 |       let refresh_token = sqlx::query!(
+    |  _________________________^
+224 | |         r#"
+225 | |         SELECT id, client_id, user_id, scope, expires_at, used_at, revoked_at
+226 | |         FROM refresh_tokens
+...   |
+229 | |         refresh_token_hash
+230 | |     )
+    | |_____^
+    |
+    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which 
+comes from the expansion of the macro `sqlx::query` (in Nightly builds, run with -Z 
+macro-backtrace for more info)
+
+error: error returned from database: password authentication failed for user "oidc_user"
+   --> crates\auth-server\src\routes\token.rs:246:5
+    |
+246 | /     sqlx::query!(
+247 | |         "UPDATE refresh_tokens SET used_at = NOW() WHERE id = $1",
+248 | |         refresh_token.id
+249 | |     )
+    | |_____^
+    |
+    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which 
+comes from the expansion of the macro `sqlx::query` (in Nightly builds, run with -Z 
+macro-backtrace for more info)
+
+error: error returned from database: password authentication failed for user "oidc_user"
+   --> crates\auth-server\src\routes\token.rs:285:5
+    |
+285 | /     sqlx::query!(
+286 | |         r#"
+287 | |         INSERT INTO refresh_tokens (token_hash, client_id, user_id, scope, 
+expires_at, parent_token_id)
+288 | |         VALUES ($1, $2, $3, $4, $5, $6)
+...   |
+295 | |         refresh_token.id
+296 | |     )
+    | |_____^
+    |
+    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which 
+comes from the expansion of the macro `sqlx::query` (in Nightly builds, run with -Z 
+macro-backtrace for more info)
+
+error: error returned from database: password authentication failed for user "oidc_user"
+   --> crates\auth-server\src\routes\token.rs:379:5
+    |
+379 | /     sqlx::query!(
+380 | |         r#"
+381 | |         INSERT INTO access_tokens (token_hash, client_id, user_id, scope, 
+expires_at)
+382 | |         VALUES ($1, $2, NULL, $3, $4)
+...   |
+387 | |         access_expires_at
+388 | |     )
+    | |_____^
+    |
+    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which 
+comes from the expansion of the macro `sqlx::query` (in Nightly builds, run with -Z 
+macro-backtrace for more info)
+
+error[E0432]: unresolved import `axum::TypedHeader`
+ --> crates\auth-server\src\routes\userinfo.rs:4:11
+  |
+4 |     Json, TypedHeader,
+  |           ^^^^^^^^^^^ no `TypedHeader` in the root
+
+error[E0432]: unresolved import `sha2`
+ --> crates\auth-server\src\routes\token.rs:3:5
+  |
+3 | use sha2::{Digest, Sha256};
+  |     ^^^^ use of unresolved module or unlinked crate `sha2`
+  |
+  = help: if you wanted to use a crate named `sha2`, use `cargo add sha2` to add it to your 
+`Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `base64`
+  --> crates\auth-server\src\routes\jwks.rs:84:9
+   |
+84 |     use base64::{engine::general_purpose::STANDARD, Engine};
+   |         ^^^^^^ use of unresolved module or unlinked crate `base64`
+   |
+   = help: if you wanted to use a crate named `base64`, use `cargo add base64` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `sha2`
+ --> crates\auth-server\src\routes\jwks.rs:3:5
+  |
+3 | use sha2::{Digest, Sha256};
+  |     ^^^^ use of unresolved module or unlinked crate `sha2`
+  |
+  = help: if you wanted to use a crate named `sha2`, use `cargo add sha2` to add it to your 
+`Cargo.toml`
+
+error[E0432]: unresolved import `base64`
+  --> crates\auth-server\src\routes\jwks.rs:84:9
+   |
+84 |     use base64::{engine::general_purpose::STANDARD, Engine};
+   |         ^^^^^^ use of unresolved module or unlinked crate `base64`
+   |
+   = help: if you wanted to use a crate named `base64`, use `cargo add base64` to add it to 
+your `Cargo.toml`
+
+error[E0412]: cannot find type `Authorization` in module `header`
+  --> crates\auth-server\src\routes\userinfo.rs:47:53
+   |
+47 |     TypedHeader(authorization): TypedHeader<header::Authorization<header::Bearer>>,
+   |                                                     ^^^^^^^^^^^^^ not found in `header`
+
+error[E0412]: cannot find type `Bearer` in module `header`
+  --> crates\auth-server\src\routes\userinfo.rs:47:75
+   |
+47 |     TypedHeader(authorization): TypedHeader<header::Authorization<header::Bearer>>,
+   |                                                                           ^^^^^^ not 
+found in `header`
+
+warning: unused import: `Serialize`
+ --> crates\auth-server\src\routes\authorize.rs:2:26
+  |
+2 | use serde::{Deserialize, Serialize};
+  |                          ^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `http::StatusCode`
+ --> crates\auth-server\src\routes\token.rs:1:28
+  |
+1 | use axum::{extract::State, http::StatusCode, Json};
+  |                            ^^^^^^^^^^^^^^^^
+
+warning: unused import: `uuid::Uuid`
+ --> crates\auth-server\src\routes\token.rs:4:5
+  |
+4 | use uuid::Uuid;
+  |     ^^^^^^^^^^
+
+warning: unused import: `ConsentManager`
+ --> crates\auth-server\src\routes\token.rs:7:39
+  |
+7 | use authentication::{verify_password, ConsentManager};
+  |                                       ^^^^^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\token.rs:8:27
+  |
+8 | use audit::{ AuditLogger, EventType};
+  |                           ^^^^^^^^^
+
+warning: unused import: `users::UserRepository`
+  --> crates\auth-server\src\routes\token.rs:11:5
+   |
+11 | use users::UserRepository;
+   |     ^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `StatusCode`
+ --> crates\auth-server\src\routes\userinfo.rs:3:20
+  |
+3 |     http::{header, StatusCode},
+  |                    ^^^^^^^^^^
+
+warning: unused import: `std::net::IpAddr`
+ --> crates\auth-server\src\routes\login.rs:3:5
+  |
+3 | use std::net::IpAddr;
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused import: `uuid::Uuid`
+ --> crates\auth-server\src\routes\login.rs:4:5
+  |
+4 | use uuid::Uuid;
+  |     ^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\login.rs:7:26
+  |
+7 | use audit::{AuditLogger, EventType};
+  |                          ^^^^^^^^^
+
+warning: unused import: `authorize::*`
+  --> crates\auth-server\src\routes\mod.rs:12:9
+   |
+12 | pub use authorize::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `token::*`
+  --> crates\auth-server\src\routes\mod.rs:13:9
+   |
+13 | pub use token::*;
+   |         ^^^^^^^^
+
+warning: unused import: `userinfo::*`
+  --> crates\auth-server\src\routes\mod.rs:14:9
+   |
+14 | pub use userinfo::*;
+   |         ^^^^^^^^^^^
+
+warning: unused import: `jwks::*`
+  --> crates\auth-server\src\routes\mod.rs:15:9
+   |
+15 | pub use jwks::*;
+   |         ^^^^^^^
+
+warning: unused import: `discovery::*`
+  --> crates\auth-server\src\routes\mod.rs:16:9
+   |
+16 | pub use discovery::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `revoke::*`
+  --> crates\auth-server\src\routes\mod.rs:17:9
+   |
+17 | pub use revoke::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `introspect::*`
+  --> crates\auth-server\src\routes\mod.rs:18:9
+   |
+18 | pub use introspect::*;
+   |         ^^^^^^^^^^^^^
+
+warning: unused import: `health::*`
+  --> crates\auth-server\src\routes\mod.rs:19:9
+   |
+19 | pub use health::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `login::*`
+  --> crates\auth-server\src\routes\mod.rs:20:9
+   |
+20 | pub use login::*;
+   |         ^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `AppError`
+   --> crates\auth-server\src\routes\login.rs:100:62
+    |
+100 |     let has_mfa = mfa_manager.has_mfa_enrolled(user.id).await?;
+    |                   -------------------------------------------^ the trait 
+`From<MfaError>` is not implemented for `AppError`
+    |                   |
+    |                   this can't be annotated with `?` because it has type `Result<_, 
+MfaError>`
+    |
+note: `AppError` needs to implement `From<MfaError>`
+   --> crates\auth-server\src\error.rs:10:1
+    |
+ 10 | pub enum AppError {
+    | ^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error 
+value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `AppError` implements `From<anyhow::Error>`
+              `AppError` implements `From<redis::RedisError>`
+              `AppError` implements `From<sqlx::Error>`
+
+error[E0277]: `?` couldn't convert the error to `AppError`
+   --> crates\auth-server\src\routes\login.rs:115:57
+    |
+115 |         if !mfa_manager.verify_totp(user.id, code).await? {
+    |             --------------------------------------------^ the trait `From<MfaError>` 
+is not implemented for `AppError`
+    |             |
+    |             this can't be annotated with `?` because it has type `Result<_, MfaError>`
+    |
+note: `AppError` needs to implement `From<MfaError>`
+   --> crates\auth-server\src\error.rs:10:1
+    |
+ 10 | pub enum AppError {
+    | ^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error 
+value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `AppError` implements `From<anyhow::Error>`
+              `AppError` implements `From<redis::RedisError>`
+              `AppError` implements `From<sqlx::Error>`
+
+Some errors have detailed explanations: E0277, E0412, E0432, E0433.
+For more information about an error, try `rustc --explain E0277`.
+warning: `auth-server` (bin "auth-server") generated 19 warnings
+error: could not compile `auth-server` (bin "auth-server") due to 13 previous errors; 19 
+warnings emitted

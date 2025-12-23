@@ -1,0 +1,370 @@
+﻿cargo : warning: unused import: `base64::Engine`
+At line:1 char:1
++ cargo build --workspace 2>&1 | Out-File -Encoding UTF8 workspace_buil ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: unused import: `base64::Engine`:Strin 
+   g) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ --> crates\authentication\src\mfa.rs:2:5
+  |
+2 | use base64::Engine;
+  |     ^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:157:5
+    |
+157 |     pub async fn touch_session(&mut self, session_token: &str) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:170:18
+    |
+170 |                 .set_ex(&session_key, session_json, remaining_seconds as u64)
+    |                  ^^^^^^
+    = note: `#[warn(dependency_on_unit_never_type_fallback)]` (part of 
+`#[warn(rust_2024_compatibility)]`) on by default
+help: use `()` annotations to avoid fallback changes
+    |
+170 |                 .set_ex::<_, _, ()>(&session_key, session_json, remaining_seconds as 
+u64)
+    |                        ++++++++++++
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:178:5
+    |
+178 |     pub async fn delete_session(&mut self, session_token: &str) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:186:29
+    |
+186 |                  self.redis.srem(&user_sessions_key, session_token).await?;
+    |                             ^^^^
+help: use `()` annotations to avoid fallback changes
+    |
+186 ~                  self.redis.srem::<_, _, ()>(&user_sessions_key, 
+session_token).await?;
+187 |              }
+188 |         }
+189 |
+190 ~         self.redis.del::<_, ()>(&session_key).await?;
+    |
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:196:5
+    |
+196 |     pub async fn delete_all_user_sessions(&mut self, user_id: Uuid) -> Result<(), 
+SessionError> {
+    |     
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it 
+will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see 
+<https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:203:24
+    |
+203 |             self.redis.del(&session_key).await?;
+    |                        ^^^
+help: use `()` annotations to avoid fallback changes
+    |
+203 ~             self.redis.del::<_, ()>(&session_key).await?;
+204 |         }
+205 |         
+206 ~         self.redis.del::<_, ()>(&user_sessions_key).await?;
+    |
+
+warning: `authentication` (lib) generated 4 warnings (run `cargo fix --lib -p 
+authentication` to apply 4 suggestions)
+   Compiling auth-server v0.1.0 (D:\projects\rust-oidc-sso\crates\auth-server)
+warning: unused import: `Serialize`
+ --> crates\auth-server\src\routes\authorize.rs:2:26
+  |
+2 | use serde::{Deserialize, Serialize};
+  |                          ^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `http::StatusCode`
+ --> crates\auth-server\src\routes\token.rs:1:28
+  |
+1 | use axum::{extract::State, http::StatusCode, Json};
+  |                            ^^^^^^^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\token.rs:9:27
+  |
+9 | use audit::{ AuditLogger, EventType};
+  |                           ^^^^^^^^^
+
+warning: unused imports: `StatusCode` and `header`
+ --> crates\auth-server\src\routes\userinfo.rs:3:12
+  |
+3 |     http::{header, StatusCode},
+  |            ^^^^^^  ^^^^^^^^^^
+
+warning: unused import: `std::net::IpAddr`
+ --> crates\auth-server\src\routes\login.rs:3:5
+  |
+3 | use std::net::IpAddr;
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused import: `uuid::Uuid`
+ --> crates\auth-server\src\routes\login.rs:4:5
+  |
+4 | use uuid::Uuid;
+  |     ^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\login.rs:7:26
+  |
+7 | use audit::{AuditLogger, EventType};
+  |                          ^^^^^^^^^
+
+warning: unused import: `authorize::*`
+  --> crates\auth-server\src\routes\mod.rs:12:9
+   |
+12 | pub use authorize::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `token::*`
+  --> crates\auth-server\src\routes\mod.rs:13:9
+   |
+13 | pub use token::*;
+   |         ^^^^^^^^
+
+warning: unused import: `userinfo::*`
+  --> crates\auth-server\src\routes\mod.rs:14:9
+   |
+14 | pub use userinfo::*;
+   |         ^^^^^^^^^^^
+
+warning: unused import: `jwks::*`
+  --> crates\auth-server\src\routes\mod.rs:15:9
+   |
+15 | pub use jwks::*;
+   |         ^^^^^^^
+
+warning: unused import: `discovery::*`
+  --> crates\auth-server\src\routes\mod.rs:16:9
+   |
+16 | pub use discovery::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `revoke::*`
+  --> crates\auth-server\src\routes\mod.rs:17:9
+   |
+17 | pub use revoke::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `introspect::*`
+  --> crates\auth-server\src\routes\mod.rs:18:9
+   |
+18 | pub use introspect::*;
+   |         ^^^^^^^^^^^^^
+
+warning: unused import: `health::*`
+  --> crates\auth-server\src\routes\mod.rs:19:9
+   |
+19 | pub use health::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `login::*`
+  --> crates\auth-server\src\routes\mod.rs:20:9
+   |
+20 | pub use login::*;
+   |         ^^^^^^^^
+
+warning: field `gdpr` is never read
+  --> crates\auth-server\src\config.rs:14:9
+   |
+ 6 | pub struct Config {
+   |            ------ field in this struct
+...
+14 |     pub gdpr: GdprConfig,
+   |         ^^^^
+   |
+   = note: `Config` has derived impls for the traits `Clone` and `Debug`, but these are 
+intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `host` and `port` are never read
+  --> crates\auth-server\src\config.rs:19:9
+   |
+18 | pub struct ServerConfig {
+   |            ------------ fields in this struct
+19 |     pub host: String,
+   |         ^^^^
+20 |     pub port: u16,
+   |         ^^^^
+   |
+   = note: `ServerConfig` has derived impls for the traits `Clone` and `Debug`, but these 
+are intentionally ignored during dead code analysis
+
+warning: field `pool_size` is never read
+  --> crates\auth-server\src\config.rs:34:9
+   |
+32 | pub struct RedisConfig {
+   |            ----------- field in this struct
+33 |     pub url: String,
+34 |     pub pool_size: u32,
+   |         ^^^^^^^^^
+   |
+   = note: `RedisConfig` has derived impls for the traits `Clone` and `Debug`, but these 
+are intentionally ignored during dead code analysis
+
+warning: fields `rate_limit_max_requests`, `rate_limit_window_seconds`, 
+`password_min_length`, and `password_max_length` are never read
+  --> crates\auth-server\src\config.rs:57:9
+   |
+56 | pub struct SecurityConfig {
+   |            -------------- fields in this struct
+57 |     pub rate_limit_max_requests: u64,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+58 |     pub rate_limit_window_seconds: u64,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+59 |     /// OWASP ASVS 2.1.1: Minimum 12 characters
+60 |     pub password_min_length: usize,
+   |         ^^^^^^^^^^^^^^^^^^^
+61 |     pub password_max_length: usize,
+   |         ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `SecurityConfig` has derived impls for the traits `Clone` and `Debug`, but these 
+are intentionally ignored during dead code analysis
+
+warning: fields `data_retention_days` and `audit_log_retention_days` are never read
+  --> crates\auth-server\src\config.rs:76:9
+   |
+75 | pub struct GdprConfig {
+   |            ---------- fields in this struct
+76 |     pub data_retention_days: i64,
+   |         ^^^^^^^^^^^^^^^^^^^
+77 |     pub audit_log_retention_days: i64,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `GdprConfig` has derived impls for the traits `Clone` and `Debug`, but these are 
+intentionally ignored during dead code analysis
+
+warning: fields `client_id`, `scope`, `state`, `code_challenge`, and `nonce` are never read
+  --> crates\auth-server\src\routes\authorize.rs:15:9
+   |
+10 | pub struct AuthorizationRequest {
+   |            -------------------- fields in this struct
+...
+15 |     pub client_id: String,
+   |         ^^^^^^^^^
+...
+22 |     pub scope: Option<String>,
+   |         ^^^^^
+...
+25 |     pub state: Option<String>,
+   |         ^^^^^
+...
+28 |     pub code_challenge: String,
+   |         ^^^^^^^^^^^^^^
+...
+34 |     pub nonce: Option<String>,
+   |         ^^^^^
+   |
+   = note: `AuthorizationRequest` has a derived impl for the trait `Debug`, but this is 
+intentionally ignored during dead code analysis
+
+warning: fields `token` and `token_type_hint` are never read
+  --> crates\auth-server\src\routes\revoke.rs:9:9
+   |
+ 8 | pub struct RevokeRequest {
+   |            ------------- fields in this struct
+ 9 |     pub token: String,
+   |         ^^^^^
+10 |     pub token_type_hint: Option<String>, // "access_token" or "refresh_token"
+   |         ^^^^^^^^^^^^^^^
+   |
+   = note: `RevokeRequest` has a derived impl for the trait `Debug`, but this is 
+intentionally ignored during dead code analysis
+
+warning: fields `token` and `token_type_hint` are never read
+  --> crates\auth-server\src\routes\introspect.rs:9:9
+   |
+ 8 | pub struct IntrospectRequest {
+   |            ----------------- fields in this struct
+ 9 |     pub token: String,
+   |         ^^^^^
+10 |     pub token_type_hint: Option<String>,
+   |         ^^^^^^^^^^^^^^^
+   |
+   = note: `IntrospectRequest` has a derived impl for the trait `Debug`, but this is 
+intentionally ignored during dead code analysis
+
+warning: variants `Forbidden` and `RateLimitExceeded` are never constructed
+  --> crates\auth-server\src\error.rs:24:5
+   |
+10 | pub enum AppError {
+   |          -------- variants in this enum
+...
+24 |     Forbidden(String),
+   |     ^^^^^^^^^
+...
+30 |     RateLimitExceeded,
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = note: `AppError` has a derived impl for the trait `Debug`, but this is intentionally 
+ignored during dead code analysis
+
+warning: fields `id`, `code`, `nonce`, and `created_at` are never read
+  --> crates\auth-server\src\authz_code.rs:28:9
+   |
+27 | pub struct AuthorizationCode {
+   |            ----------------- fields in this struct
+28 |     pub id: Uuid,
+   |         ^^
+29 |     pub code: String,
+   |         ^^^^
+...
+36 |     pub nonce: Option<String>,
+   |         ^^^^^
+...
+39 |     pub created_at: DateTime<Utc>,
+   |         ^^^^^^^^^^
+   |
+   = note: `AuthorizationCode` has a derived impl for the trait `Debug`, but this is 
+intentionally ignored during dead code analysis
+
+warning: methods `create` and `delete_expired` are never used
+   --> crates\auth-server\src\authz_code.rs:63:18
+    |
+ 47 | impl AuthCodeRepository {
+    | ----------------------- methods in this implementation
+...
+ 63 |     pub async fn create(
+    |                  ^^^^^^
+...
+160 |     pub async fn delete_expired(&self) -> Result<u64, AuthCodeError> {
+    |                  ^^^^^^^^^^^^^^
+
+warning: `auth-server` (bin "auth-server") generated 27 warnings (run `cargo fix --bin 
+"auth-server"` to apply 16 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 26.75s
+warning: the following packages contain code that will be rejected by a future version of 
+Rust: authentication v0.1.0 (D:\projects\rust-oidc-sso\crates\authentication), redis 
+v0.24.0, sqlx-postgres v0.7.4
+note: to see what the problems were, use the option `--future-incompat-report`, or run 
+`cargo report future-incompatibilities --id 2`

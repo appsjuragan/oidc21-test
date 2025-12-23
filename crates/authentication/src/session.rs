@@ -19,6 +19,9 @@ pub enum SessionError {
     #[error("Too many concurrent sessions")]
     TooManyConcurrent,
     
+    #[error("Serialization error: {0}")]
+    SerializationError(String),
+
     #[error("Redis error: {0}")]
     RedisError(#[from] redis::RedisError),
 }
@@ -103,21 +106,22 @@ impl SessionManager {
         let session_key = format!("session:{}", session_token);
         let user_sessions_key = format!("user_sessions:{}", user_id);
         
-        let session_json = serde_json::to_string(&session)?;
+        let session_json = serde_json::to_string(&session)
+            .map_err(|e| SessionError::SerializationError(e.to_string()))?;
         
         // Store session data
         self.redis
-            .set_ex(&session_key, session_json, self.config.absolute_timeout_seconds as u64)
+            .set_ex::<_, _, ()>(&session_key, session_json, self.config.absolute_timeout_seconds as u64)
             .await?;
 
         // Track user's active sessions
         self.redis
-            .sadd(&user_sessions_key, &session_token)
+            .sadd::<_, _, ()>(&user_sessions_key, &session_token)
             .await?;
         
         // Set expiration on user sessions set
         self.redis
-            .expire(&user_sessions_key, self.config.absolute_timeout_seconds as i64)
+            .expire::<_, ()>(&user_sessions_key, self.config.absolute_timeout_seconds as i64)
             .await?;
 
         Ok(session)
@@ -129,7 +133,7 @@ impl SessionManager {
         
         let session_json: Option<String> = self.redis.get(&session_key).await?;
         
-        let mut session: Session = session_json
+        let session: Session = session_json
             .ok_or(SessionError::NotFound)
             .and_then(|json| serde_json::from_str(&json).map_err(|_| SessionError::NotFound))?;
 
@@ -156,7 +160,8 @@ impl SessionManager {
         session.last_activity_at = Utc::now();
         
         let session_key = format!("session:{}", session_token);
-        let session_json = serde_json::to_string(&session)?;
+        let session_json = serde_json::to_string(&session)
+            .map_err(|e| SessionError::SerializationError(e.to_string()))?;
         
         // Update with remaining time until absolute timeout
         let remaining_seconds = (session.expires_at - Utc::now()).num_seconds();
@@ -173,10 +178,13 @@ impl SessionManager {
     pub async fn delete_session(&mut self, session_token: &str) -> Result<(), SessionError> {
         let session_key = format!("session:{}", session_token);
         
-        // Get user_id before deleting
-        if let Ok(session) = self.get_session(session_token).await {
-            let user_sessions_key = format!("user_sessions:{}", session.user_id);
-            self.redis.srem(&user_sessions_key, session_token).await?;
+        // Manually get session to find user_id WITHOUT calling self.get_session() to avoid recursion
+        let session_json: Option<String> = self.redis.get(&session_key).await?;
+        if let Some(json) = session_json {
+             if let Ok(session) = serde_json::from_str::<Session>(&json) {
+                 let user_sessions_key = format!("user_sessions:{}", session.user_id);
+                 self.redis.srem(&user_sessions_key, session_token).await?;
+             }
         }
 
         self.redis.del(&session_key).await?;

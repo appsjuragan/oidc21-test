@@ -13,7 +13,17 @@ rand = { workspace = true }
 uuid = { workspace = true }
 chrono = { workspace = true }
 totp-rs = { workspace = true }
+sha1 = "0.10"
 reqwest = { workspace = true }
+sqlx = { workspace = true }
+redis = { workspace = true }
+serde_json = { workspace = true }
+base64 = { workspace = true }
+sha2 = { workspace = true }
+security = { path = "../security" }
 
 # Additional
 zxcvbn = "2.2"  # Password strength estimation
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["macros"] }

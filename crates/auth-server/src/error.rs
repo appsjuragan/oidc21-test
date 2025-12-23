@@ -31,6 +31,9 @@ pub enum AppError {
 
     #[error("Internal server error")]
     Internal(#[from] anyhow::Error),
+
+    #[error("MFA error: {0}")]
+    Mfa(#[from] authentication::mfa::MfaError),
 }
 
 impl IntoResponse for AppError {
@@ -52,6 +55,15 @@ impl IntoResponse for AppError {
             AppError::Internal(ref e) => {
                 tracing::error!("Internal error: {:?}", e);
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
+            }
+            AppError::Mfa(ref e) => {
+                match e {
+                    authentication::mfa::MfaError::InvalidCode => (StatusCode::UNAUTHORIZED, "Invalid authentication code"),
+                    authentication::mfa::MfaError::NotEnrolled => (StatusCode::FORBIDDEN, "MFA not enrolled"),
+                    authentication::mfa::MfaError::NotFound => (StatusCode::NOT_FOUND, "MFA credential not found"),
+                    authentication::mfa::MfaError::Database(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Database error"),
+                    authentication::mfa::MfaError::TotpError(_) => (StatusCode::INTERNAL_SERVER_ERROR, "TOTP processing error"),
+                }
             }
         };
 

@@ -102,7 +102,7 @@ pub struct AuditLog {
     pub resource: Option<String>,
     pub action: Option<String>,
     pub outcome: String,
-    pub ip_address: Option<IpAddr>,
+    pub ip_address: Option<String>, // Changed to String to simplify mapping
     pub user_agent: Option<String>,
     pub details: Option<JsonValue>,
     pub created_at: DateTime<Utc>,
@@ -119,20 +119,9 @@ impl AuditLogger {
     }
 
     /// Log an audit event
-    ///
-    /// # Arguments
-    /// * `event_type` - Type of event
-    /// * `user_id` - User who performed the action (optional)
-    /// * `client_id` - OAuth client involved (optional)
-    /// * `resource` - Resource affected (optional)
-    /// * `action` - Action performed (optional)
-    /// * `outcome` - "success" or "failure"
-    /// * `ip_address` - IP address of request (optional)
-    /// * `user_agent` - User agent string (optional)
-    /// * `details` - Additional event details as JSON (optional)
     pub async fn log(
         &self,
-        event_type: Event Type,
+        event_type: EventType,
         user_id: Option<Uuid>,
         client_id: Option<Uuid>,
         resource: Option<String>,
@@ -158,7 +147,7 @@ impl AuditLogger {
         .bind(resource)
         .bind(action)
         .bind(outcome)
-        .bind(ip_address)
+        .bind(ip_address.map(|ip| ip.to_string())) // Convert IpAddr to String
         .bind(user_agent)
         .bind(details)
         .execute(&self.pool)
@@ -286,7 +275,7 @@ impl AuditLogger {
     /// Query audit logs for a user (GDPR audit trail)
     pub async fn get_user_logs(&self, user_id: Uuid, limit: i64) -> Result<Vec<AuditLog>> {
         let logs = sqlx::query_as::<_, AuditLog>(
-            "SELECT * FROM audit_logs WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2"
+            "SELECT id, event_type, event_category, user_id, client_id, resource, action, outcome, ip_address::TEXT, user_agent, details, created_at FROM audit_logs WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2"
         )
         .bind(user_id)
         .bind(limit)
@@ -300,7 +289,7 @@ impl AuditLogger {
     pub async fn get_security_events(&self, since: DateTime<Utc>, limit: i64) -> Result<Vec<AuditLog>> {
         let logs = sqlx::query_as::<_, AuditLog>(
             r#"
-            SELECT * FROM audit_logs 
+            SELECT id, event_type, event_category, user_id, client_id, resource, action, outcome, ip_address::TEXT, user_agent, details, created_at FROM audit_logs 
             WHERE event_category = 'security' AND created_at >= $1
             ORDER BY created_at DESC 
             LIMIT $2

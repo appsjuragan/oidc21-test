@@ -5,7 +5,7 @@
 Cargo.lock
 
 # Environment files
-.env
+# .env
 .env.local
 
 # IDE

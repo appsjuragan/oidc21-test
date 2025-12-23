@@ -47,9 +47,12 @@ pub async fn login(
         .await?
         .ok_or_else(|| {
             // Log failed attempt
+            let email = request.email.clone();
+            let db = state.db.clone();
             tokio::spawn(async move {
-                let _ = audit_logger.log_login_failure(
-                    &request.email,
+                let logger = AuditLogger::new(db);
+                let _ = logger.log_login_failure(
+                    &email,
                     "User not found",
                     None,
                     None,

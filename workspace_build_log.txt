@@ -1,0 +1,751 @@
+﻿cargo :    Compiling num-traits v0.2.19
+At line:1 char:71
++ ... tools\mingw64\bin;" + $env:PATH; cargo build --workspace 2>&1 | Out-F ...
++                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling num-traits v0.2.19:String) [], Re 
+   moteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   Compiling getrandom v0.3.4
+   Compiling simd-adler32 v0.3.8
+   Compiling byteorder-lite v0.1.0
+   Compiling bytemuck v1.24.0
+   Compiling qrcodegen v1.8.0
+   Compiling urlencoding v2.1.3
+   Compiling ahash v0.8.12
+   Compiling tempfile v3.23.0
+   Compiling uuid v1.19.0
+   Compiling rand_core v0.9.3
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling hashbrown v0.14.5
+   Compiling rand_chacha v0.9.0
+   Compiling rand v0.9.2
+   Compiling flate2 v1.1.5
+   Compiling hashlink v0.8.4
+   Compiling chrono v0.4.42
+   Compiling atoi v2.0.0
+   Compiling num-integer v0.1.46
+   Compiling pxfm v0.1.27
+   Compiling png v0.18.0
+   Compiling compression-codecs v0.4.35
+   Compiling num-bigint v0.4.6
+   Compiling async-compression v0.4.36
+   Compiling sqlx-core v0.7.4
+   Compiling tower-http v0.5.2
+   Compiling simple_asn1 v0.6.3
+   Compiling jsonwebtoken v9.3.1
+   Compiling security v0.1.0 (D:\projects\rust-oidc-sso\crates\security)
+   Compiling moxcms v0.7.10
+   Compiling sqlx-postgres v0.7.4
+   Compiling sqlx-macros-core v0.7.4
+   Compiling image v0.25.9
+   Compiling sqlx-macros v0.7.4
+   Compiling sqlx v0.7.4
+   Compiling clients v0.1.0 (D:\projects\rust-oidc-sso\crates\clients)
+   Compiling audit v0.1.0 (D:\projects\rust-oidc-sso\crates\audit)
+   Compiling users v0.1.0 (D:\projects\rust-oidc-sso\crates\users)
+   Compiling qrcodegen-image v1.5.0
+error: expected one of `:`, `@`, or `|`, found `,`
+   --> crates\audit\src\lib.rs:135:31
+    |
+135 |         event_type: Event Type,
+    |                               ^ expected one of `:`, `@`, or `|`
+    |
+help: if this is a parameter name, give it a type
+    |
+135 |         event_type: Event Type: TypeName,
+    |                               ++++++++++
+help: if this is a type, explicitly ignore the parameter name
+    |
+135 |         event_type: Event _: Type,
+    |                           ++
+
+error: expected one of `!`, `(`, `)`, `+`, `,`, `::`, or `<`, found `Type`
+   --> crates\audit\src\lib.rs:135:27
+    |
+135 |         event_type: Event Type,
+    |                          -^^^^ expected one of 7 possible tokens
+    |                          |
+    |                          help: missing `,`
+
+error[E0432]: unresolved import `anyhow`
+ --> crates\clients\src\lib.rs:1:5
+  |
+1 | use anyhow::Result;
+  |     ^^^^^^ use of unresolved module or unlinked crate `anyhow`
+  |
+  = help: if you wanted to use a crate named `anyhow`, use `cargo add anyhow` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `anyhow`
+ --> crates\audit\src\lib.rs:1:5
+  |
+1 | use anyhow::Result;
+  |     ^^^^^^ use of unresolved module or unlinked crate `anyhow`
+  |
+  = help: if you wanted to use a crate named `anyhow`, use `cargo add anyhow` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `chrono`
+ --> crates\clients\src\lib.rs:2:5
+  |
+2 | use chrono::{DateTime, Utc};
+  |     ^^^^^^ use of unresolved module or unlinked crate `chrono`
+  |
+  = help: if you wanted to use a crate named `chrono`, use `cargo add chrono` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `anyhow`
+ --> crates\users\src\lib.rs:1:5
+  |
+1 | use anyhow::Result;
+  |     ^^^^^^ use of unresolved module or unlinked crate `anyhow`
+  |
+  = help: if you wanted to use a crate named `anyhow`, use `cargo add anyhow` to add it to 
+your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `anyhow`
+   --> crates\users\src\lib.rs:242:28
+    |
+242 |             .ok_or_else(|| anyhow::anyhow!("User not found"))?;
+    |                            ^^^^^^ use of unresolved module or unlinked crate `anyhow`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> crates\users\src\lib.rs:246:12
+    |
+246 |         Ok(serde_json::json!({
+    |            ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+
+error[E0412]: cannot find type `Event` in this scope
+   --> crates\audit\src\lib.rs:135:21
+    |
+135 |         event_type: Event Type,
+    |                     ^^^^^ not found in this scope
+
+   Compiling totp-rs v5.7.0
+error[E0277]: the trait bound `IpAddr: Encode<'_, Postgres>` is not satisfied
+   --> crates\audit\src\lib.rs:161:15
+    |
+161 |         .bind(ip_address)
+    |          ---- ^^^^^^^^^^ the trait `Encode<'_, Postgres>` is not implemented for 
+`IpAddr`
+    |          |
+    |          required by a bound introduced by this call
+    |
+    = help: the following other types implement trait `Encode<'q, DB>`:
+              `&'a str` implements `Encode<'a, sqlx::Any>`
+              `&'q [u8]` implements `Encode<'q, sqlx::Any>`
+              `&T` implements `Encode<'q, DB>`
+              `&[T]` implements `Encode<'q, Postgres>`
+              `&[u8]` implements `Encode<'_, Postgres>`
+              `&str` implements `Encode<'_, Postgres>`
+              `Box<[u8]>` implements `Encode<'_, Postgres>`
+              `Box<str>` implements `Encode<'_, Postgres>`
+            and 41 others
+    = note: required for `std::option::Option<IpAddr>` to implement `Encode<'_, Postgres>`
+note: required by a bound in `Query::<'q, DB, <DB as HasArguments<'q>>::Arguments>::bind`
+   --> C:\Users\HY3-UB-061\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\sqlx-core-0.
+7.4\src\query.rs:81:32
+    |
+ 81 |     pub fn bind<T: 'q + Send + Encode<'q, DB> + Type<DB>>(mut self, value: T) -> Self 
+{
+    |                                ^^^^^^^^^^^^^^ required by this bound in `Query::<'q, 
+DB, <DB as HasArguments<'q>>::Arguments>::bind`
+
+error[E0277]: the trait bound `IpAddr: Type<Postgres>` is not satisfied
+   --> crates\audit\src\lib.rs:161:15
+    |
+161 |         .bind(ip_address)
+    |          ---- ^^^^^^^^^^ the trait `Type<Postgres>` is not implemented for `IpAddr`
+    |          |
+    |          required by a bound introduced by this call
+    |
+    = help: the following other types implement trait `Type<DB>`:
+              `&T` implements `Type<DB>`
+              `()` implements `Type<Postgres>`
+              `(T1, T2)` implements `Type<Postgres>`
+              `(T1, T2, T3)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5, T6)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5, T6, T7)` implements `Type<Postgres>`
+            and 51 others
+    = note: required for `std::option::Option<IpAddr>` to implement `Encode<'_, Postgres>`
+note: required by a bound in `Query::<'q, DB, <DB as HasArguments<'q>>::Arguments>::bind`
+   --> C:\Users\HY3-UB-061\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\sqlx-core-0.
+7.4\src\query.rs:81:32
+    |
+ 81 |     pub fn bind<T: 'q + Send + Encode<'q, DB> + Type<DB>>(mut self, value: T) -> Self 
+{
+    |                                ^^^^^^^^^^^^^^ required by this bound in `Query::<'q, 
+DB, <DB as HasArguments<'q>>::Arguments>::bind`
+
+error[E0061]: this method takes 10 arguments but 9 arguments were supplied
+   --> crates\audit\src\lib.rs:177:14
+    |
+177 |         self.log(
+    |              ^^^
+...
+183 |             "success",
+    |             --------- argument #6 of type `std::option::Option<std::string::String>` 
+is missing
+    |
+note: expected `Option<Value>`, found `Option<String>`
+   --> crates\audit\src\lib.rs:185:13
+    |
+185 |             user_agent,
+    |             ^^^^^^^^^^
+    = note: expected enum `std::option::Option<JsonValue>`
+               found enum `std::option::Option<std::string::String>`
+note: method defined here
+   --> crates\audit\src\lib.rs:133:18
+    |
+133 |     pub async fn log(
+    |                  ^^^
+...
+139 |         action: Option<String>,
+    |         ----------------------
+...
+143 |         details: Option<JsonValue>,
+    |         --------------------------
+help: provide the argument
+    |
+177 ~         self.log(
+178 +             EventType::LoginSuccess,
+179 +             Some(user_id),
+180 +             None,
+181 +             None,
+182 +             Some("login".to_string()),
+183 +             /* std::option::Option<std::string::String> */,
+184 +             "success",
+185 +             ip_address,
+186 +             None,
+187 +             /* std::option::Option<JsonValue> */,
+188 +         )
+    |
+
+error[E0308]: mismatched types
+   --> crates\audit\src\lib.rs:213:18
+    |
+213 |             Some(details),
+    |             ---- ^^^^^^^ expected `String`, found `Value`
+    |             |
+    |             arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `JsonValue` due to the type of the argument passed
+   --> crates\audit\src\lib.rs:213:13
+    |
+213 |             Some(details),
+    |             ^^^^^-------^
+    |                  |
+    |                  this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\option.rs:602:5
+help: try using a conversion method
+    |
+213 |             Some(details.to_string()),
+    |                         ++++++++++++
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `clients` (lib) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error[E0061]: this method takes 10 arguments but 9 arguments were supplied
+   --> crates\audit\src\lib.rs:204:14
+    |
+204 |         self.log(
+    |              ^^^
+...
+210 |             "failure",
+    |             --------- argument #6 of type `std::option::Option<std::string::String>` 
+is missing
+    |
+note: expected `Option<Value>`, found `Option<String>`
+   --> crates\audit\src\lib.rs:212:13
+    |
+212 |             user_agent,
+    |             ^^^^^^^^^^
+    = note: expected enum `std::option::Option<JsonValue>`
+               found enum `std::option::Option<std::string::String>`
+note: method defined here
+   --> crates\audit\src\lib.rs:133:18
+    |
+133 |     pub async fn log(
+    |                  ^^^
+...
+139 |         action: Option<String>,
+    |         ----------------------
+...
+143 |         details: Option<JsonValue>,
+    |         --------------------------
+help: provide the argument
+    |
+204 ~         self.log(
+205 +             EventType::LoginFailure,
+206 +             None,
+207 +             None,
+208 +             None,
+209 +             Some("login".to_string()),
+210 +             /* std::option::Option<std::string::String> */,
+211 +             "failure",
+212 +             ip_address,
+213 +             Some(details),
+214 +             /* std::option::Option<JsonValue> */,
+215 +         )
+    |
+
+error[E0308]: mismatched types
+   --> crates\audit\src\lib.rs:235:18
+    |
+235 |             Some("access_token".to_string()),
+    |             ---- ^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Uuid`, found `String`
+    |             |
+    |             arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `std::string::String` due to the type of the argument 
+passed
+   --> crates\audit\src\lib.rs:235:13
+    |
+235 |             Some("access_token".to_string()),
+    |             ^^^^^--------------------------^
+    |                  |
+    |                  this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\option.rs:602:5
+
+error[E0308]: mismatched types
+   --> crates\audit\src\lib.rs:240:18
+    |
+240 |             Some(details),
+    |             ---- ^^^^^^^ expected `String`, found `Value`
+    |             |
+    |             arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `JsonValue` due to the type of the argument passed
+   --> crates\audit\src\lib.rs:240:13
+    |
+240 |             Some(details),
+    |             ^^^^^-------^
+    |                  |
+    |                  this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\option.rs:602:5
+help: try using a conversion method
+    |
+240 |             Some(details.to_string()),
+    |                         ++++++++++++
+
+error[E0061]: this method takes 10 arguments but 9 arguments were supplied
+   --> crates\audit\src\lib.rs:231:14
+    |
+231 |           self.log(
+    |  ______________^^^-
+232 | |             EventType::TokenIssued,
+233 | |             user_id,
+234 | |             Some(client_id),
+...   |
+237 | |             "success",
+    | |             --------- expected `std::option::Option<std::string::String>`, found 
+`&'static str`
+238 | |             None,
+    | |             ---- expected `&str`, found `std::option::Option<_>`
+239 | |             None,
+240 | |             Some(details),
+241 | |         )
+    | |_________- argument #10 of type `std::option::Option<JsonValue>` is missing
+    |
+note: method defined here
+   --> crates\audit\src\lib.rs:133:18
+    |
+133 |     pub async fn log(
+    |                  ^^^
+...
+143 |         details: Option<JsonValue>,
+    |         --------------------------
+help: did you mean
+    |
+231 ~         self.log(
+232 +             EventType::TokenIssued,
+233 +             user_id,
+234 +             Some(client_id),
+235 +             Some("access_token".to_string()),
+236 +             Some("issue".to_string()),
+237 +             None,
+238 +             "success",
+239 +             None,
+240 +             Some(details),
+241 +             /* std::option::Option<JsonValue> */,
+242 +         )
+    |
+
+error[E0308]: mismatched types
+   --> crates\audit\src\lib.rs:251:18
+    |
+251 |             Some("user_data".to_string()),
+    |             ---- ^^^^^^^^^^^^^^^^^^^^^^^ expected `Uuid`, found `String`
+    |             |
+    |             arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `std::string::String` due to the type of the argument 
+passed
+   --> crates\audit\src\lib.rs:251:13
+    |
+251 |             Some("user_data".to_string()),
+    |             ^^^^^-----------------------^
+    |                  |
+    |                  this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\option.rs:602:5
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> crates\users\src\lib.rs:240:62
+    |
+240 |     pub async fn export_data(&self, user_id: Uuid) -> Result<serde_json::Value> {
+    |                                                              ^^^^^^^^^^ use of 
+unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to 
+add it to your `Cargo.toml`
+
+Some errors have detailed explanations: E0432, E0433.
+For more information about an error, try `rustc --explain E0432`.
+error[E0061]: this method takes 10 arguments but 9 arguments were supplied
+   --> crates\audit\src\lib.rs:247:14
+    |
+247 |           self.log(
+    |  ______________^^^-
+248 | |             EventType::UserDataExported,
+249 | |             Some(user_id),
+250 | |             None,
+...   |
+253 | |             "success",
+    | |             --------- expected `std::option::Option<std::string::String>`, found 
+`&'static str`
+254 | |             None,
+    | |             ---- expected `&str`, found `std::option::Option<_>`
+255 | |             None,
+256 | |             None,
+257 | |         )
+    | |_________- argument #10 of type `std::option::Option<JsonValue>` is missing
+    |
+note: method defined here
+   --> crates\audit\src\lib.rs:133:18
+    |
+133 |     pub async fn log(
+    |                  ^^^
+...
+143 |         details: Option<JsonValue>,
+    |         --------------------------
+help: did you mean
+    |
+247 ~         self.log(
+248 +             EventType::UserDataExported,
+249 +             Some(user_id),
+250 +             None,
+251 +             Some("user_data".to_string()),
+252 +             Some("export".to_string()),
+253 +             None,
+254 +             "success",
+255 +             None,
+256 +             None,
+257 +             /* std::option::Option<JsonValue> */,
+258 +         )
+    |
+
+error: could not compile `users` (lib) due to 4 previous errors
+error[E0308]: mismatched types
+   --> crates\audit\src\lib.rs:276:18
+    |
+276 |             Some("user_account".to_string()),
+    |             ---- ^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Uuid`, found `String`
+    |             |
+    |             arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `std::string::String` due to the type of the argument 
+passed
+   --> crates\audit\src\lib.rs:276:13
+    |
+276 |             Some("user_account".to_string()),
+    |             ^^^^^--------------------------^
+    |                  |
+    |                  this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\option.rs:602:5
+
+error[E0308]: mismatched types
+   --> crates\audit\src\lib.rs:281:18
+    |
+281 |             Some(details),
+    |             ---- ^^^^^^^ expected `String`, found `Value`
+    |             |
+    |             arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `JsonValue` due to the type of the argument passed
+   --> crates\audit\src\lib.rs:281:13
+    |
+281 |             Some(details),
+    |             ^^^^^-------^
+    |                  |
+    |                  this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\option.rs:602:5
+help: try using a conversion method
+    |
+281 |             Some(details.to_string()),
+    |                         ++++++++++++
+
+error[E0061]: this method takes 10 arguments but 9 arguments were supplied
+   --> crates\audit\src\lib.rs:272:14
+    |
+272 |         self.log(
+    |              ^^^
+...
+278 |             "success",
+    |             --------- argument #6 of type `std::option::Option<std::string::String>` 
+is missing
+    |
+note: expected `Option<Value>`, found `Option<IpAddr>`
+   --> crates\audit\src\lib.rs:279:13
+    |
+279 |             ip_address,
+    |             ^^^^^^^^^^
+    = note: expected enum `std::option::Option<JsonValue>`
+               found enum `std::option::Option<IpAddr>`
+note: method defined here
+   --> crates\audit\src\lib.rs:133:18
+    |
+133 |     pub async fn log(
+    |                  ^^^
+...
+139 |         action: Option<String>,
+    |         ----------------------
+...
+143 |         details: Option<JsonValue>,
+    |         --------------------------
+help: provide the argument
+    |
+272 ~         self.log(
+273 +             EventType::AccountLocked,
+274 +             Some(user_id),
+275 +             None,
+276 +             Some("user_account".to_string()),
+277 +             Some("lock".to_string()),
+278 +             /* std::option::Option<std::string::String> */,
+279 +             "success",
+280 +             None,
+281 +             Some(details),
+282 +             /* std::option::Option<JsonValue> */,
+283 +         )
+    |
+
+error[E0277]: the trait bound `IpAddr: sqlx::Decode<'_, _>` is not satisfied
+   --> crates\audit\src\lib.rs:288:40
+    |
+288 |         let logs = sqlx::query_as::<_, AuditLog>(
+    |                                        ^^^^^^^^ the trait `sqlx::Decode<'_, _>` is 
+not implemented for `IpAddr`
+    |
+    = help: the following other types implement trait `sqlx::Decode<'r, DB>`:
+              `&'a str` implements `sqlx::Decode<'a, sqlx::Any>`
+              `&'r JsonRawValue` implements `sqlx::Decode<'r, DB>`
+              `&'r [u8]` implements `sqlx::Decode<'r, Postgres>`
+              `&'r [u8]` implements `sqlx::Decode<'r, sqlx::Any>`
+              `&'r str` implements `sqlx::Decode<'r, Postgres>`
+              `()` implements `sqlx::Decode<'r, Postgres>`
+              `(T1, T2)` implements `sqlx::Decode<'r, Postgres>`
+              `(T1, T2, T3)` implements `sqlx::Decode<'r, Postgres>`
+            and 49 others
+    = note: required for `std::option::Option<IpAddr>` to implement `sqlx::Decode<'_, _>`
+note: required for `AuditLog` to implement `for<'r> FromRow<'r, _>`
+   --> crates\audit\src\lib.rs:95:48
+    |
+ 95 | #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+    |                                                ^^^^^^^^^^^^^ unsatisfied trait bound 
+introduced in this `derive` macro
+ 96 | pub struct AuditLog {
+    |            ^^^^^^^^
+note: required by a bound in `sqlx::query_as`
+   --> C:\Users\HY3-UB-061\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\sqlx-core-0.
+7.4\src\query_as.rs:345:8
+    |
+342 | pub fn query_as<'q, DB, O>(sql: &'q str) -> QueryAs<'q, DB, O, <DB as 
+HasArguments<'q>>::Arguments>
+    |        -------- required by a bound in this function
+...
+345 |     O: for<'r> FromRow<'r, DB::Row>,
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `query_as`
+    = note: this error originates in the derive macro `sqlx::FromRow` (in Nightly builds, 
+run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `IpAddr: Type<_>` is not satisfied
+   --> crates\audit\src\lib.rs:288:40
+    |
+288 |         let logs = sqlx::query_as::<_, AuditLog>(
+    |                                        ^^^^^^^^ the trait `Type<_>` is not 
+implemented for `IpAddr`
+    |
+    = help: the following other types implement trait `Type<DB>`:
+              `&T` implements `Type<DB>`
+              `()` implements `Type<Postgres>`
+              `(T1, T2)` implements `Type<Postgres>`
+              `(T1, T2, T3)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5, T6)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5, T6, T7)` implements `Type<Postgres>`
+            and 51 others
+    = note: required for `std::option::Option<IpAddr>` to implement `Type<_>`
+note: required for `AuditLog` to implement `for<'r> FromRow<'r, _>`
+   --> crates\audit\src\lib.rs:95:48
+    |
+ 95 | #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+    |                                                ^^^^^^^^^^^^^ unsatisfied trait bound 
+introduced in this `derive` macro
+ 96 | pub struct AuditLog {
+    |            ^^^^^^^^
+note: required by a bound in `sqlx::query_as`
+   --> C:\Users\HY3-UB-061\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\sqlx-core-0.
+7.4\src\query_as.rs:345:8
+    |
+342 | pub fn query_as<'q, DB, O>(sql: &'q str) -> QueryAs<'q, DB, O, <DB as 
+HasArguments<'q>>::Arguments>
+    |        -------- required by a bound in this function
+...
+345 |     O: for<'r> FromRow<'r, DB::Row>,
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `query_as`
+    = note: this error originates in the derive macro `sqlx::FromRow` (in Nightly builds, 
+run with -Z macro-backtrace for more info)
+
+error[E0599]: the method `fetch_all` exists for struct `QueryAs<'_, Postgres, AuditLog, 
+PgArguments>`, but its trait bounds were not satisfied
+   --> crates\audit\src\lib.rs:293:10
+    |
+ 96 |   pub struct AuditLog {
+    |   ------------------- doesn't satisfy `AuditLog: FromRow<'r, PgRow>`
+...
+288 |           let logs = sqlx::query_as::<_, AuditLog>(
+    |  ____________________-
+289 | |             "SELECT * FROM audit_logs WHERE user_id = $1 ORDER BY created_at DESC 
+LIMIT $2"
+290 | |         )
+291 | |         .bind(user_id)
+292 | |         .bind(limit)
+293 | |         .fetch_all(&self.pool)
+    | |         -^^^^^^^^^ method cannot be called on `QueryAs<'_, Postgres, AuditLog, 
+PgArguments>` due to unsatisfied trait bounds
+    | |_________|
+    |
+    |
+    = note: the following trait bounds were not satisfied:
+            `IpAddr: sqlx::Decode<'_, Postgres>`
+            which is required by `AuditLog: FromRow<'r, PgRow>`
+            `IpAddr: Type<Postgres>`
+            which is required by `AuditLog: FromRow<'r, PgRow>`
+
+error[E0277]: the trait bound `IpAddr: sqlx::Decode<'_, _>` is not satisfied
+   --> crates\audit\src\lib.rs:301:40
+    |
+301 |         let logs = sqlx::query_as::<_, AuditLog>(
+    |                                        ^^^^^^^^ the trait `sqlx::Decode<'_, _>` is 
+not implemented for `IpAddr`
+    |
+    = help: the following other types implement trait `sqlx::Decode<'r, DB>`:
+              `&'a str` implements `sqlx::Decode<'a, sqlx::Any>`
+              `&'r JsonRawValue` implements `sqlx::Decode<'r, DB>`
+              `&'r [u8]` implements `sqlx::Decode<'r, Postgres>`
+              `&'r [u8]` implements `sqlx::Decode<'r, sqlx::Any>`
+              `&'r str` implements `sqlx::Decode<'r, Postgres>`
+              `()` implements `sqlx::Decode<'r, Postgres>`
+              `(T1, T2)` implements `sqlx::Decode<'r, Postgres>`
+              `(T1, T2, T3)` implements `sqlx::Decode<'r, Postgres>`
+            and 49 others
+    = note: required for `std::option::Option<IpAddr>` to implement `sqlx::Decode<'_, _>`
+note: required for `AuditLog` to implement `for<'r> FromRow<'r, _>`
+   --> crates\audit\src\lib.rs:95:48
+    |
+ 95 | #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+    |                                                ^^^^^^^^^^^^^ unsatisfied trait bound 
+introduced in this `derive` macro
+ 96 | pub struct AuditLog {
+    |            ^^^^^^^^
+note: required by a bound in `sqlx::query_as`
+   --> C:\Users\HY3-UB-061\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\sqlx-core-0.
+7.4\src\query_as.rs:345:8
+    |
+342 | pub fn query_as<'q, DB, O>(sql: &'q str) -> QueryAs<'q, DB, O, <DB as 
+HasArguments<'q>>::Arguments>
+    |        -------- required by a bound in this function
+...
+345 |     O: for<'r> FromRow<'r, DB::Row>,
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `query_as`
+    = note: this error originates in the derive macro `sqlx::FromRow` (in Nightly builds, 
+run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `IpAddr: Type<_>` is not satisfied
+   --> crates\audit\src\lib.rs:301:40
+    |
+301 |         let logs = sqlx::query_as::<_, AuditLog>(
+    |                                        ^^^^^^^^ the trait `Type<_>` is not 
+implemented for `IpAddr`
+    |
+    = help: the following other types implement trait `Type<DB>`:
+              `&T` implements `Type<DB>`
+              `()` implements `Type<Postgres>`
+              `(T1, T2)` implements `Type<Postgres>`
+              `(T1, T2, T3)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5, T6)` implements `Type<Postgres>`
+              `(T1, T2, T3, T4, T5, T6, T7)` implements `Type<Postgres>`
+            and 51 others
+    = note: required for `std::option::Option<IpAddr>` to implement `Type<_>`
+note: required for `AuditLog` to implement `for<'r> FromRow<'r, _>`
+   --> crates\audit\src\lib.rs:95:48
+    |
+ 95 | #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+    |                                                ^^^^^^^^^^^^^ unsatisfied trait bound 
+introduced in this `derive` macro
+ 96 | pub struct AuditLog {
+    |            ^^^^^^^^
+note: required by a bound in `sqlx::query_as`
+   --> C:\Users\HY3-UB-061\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\sqlx-core-0.
+7.4\src\query_as.rs:345:8
+    |
+342 | pub fn query_as<'q, DB, O>(sql: &'q str) -> QueryAs<'q, DB, O, <DB as 
+HasArguments<'q>>::Arguments>
+    |        -------- required by a bound in this function
+...
+345 |     O: for<'r> FromRow<'r, DB::Row>,
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `query_as`
+    = note: this error originates in the derive macro `sqlx::FromRow` (in Nightly builds, 
+run with -Z macro-backtrace for more info)
+
+error[E0599]: the method `fetch_all` exists for struct `QueryAs<'_, Postgres, AuditLog, 
+PgArguments>`, but its trait bounds were not satisfied
+   --> crates\audit\src\lib.rs:311:10
+    |
+ 96 |   pub struct AuditLog {
+    |   ------------------- doesn't satisfy `AuditLog: FromRow<'r, PgRow>`
+...
+301 |           let logs = sqlx::query_as::<_, AuditLog>(
+    |  ____________________-
+302 | |             r#"
+303 | |             SELECT * FROM audit_logs 
+304 | |             WHERE event_category = 'security' AND created_at >= $1
+...   |
+310 | |         .bind(limit)
+311 | |         .fetch_all(&self.pool)
+    | |         -^^^^^^^^^ method cannot be called on `QueryAs<'_, Postgres, AuditLog, 
+PgArguments>` due to unsatisfied trait bounds
+    | |_________|
+    |
+    |
+    = note: the following trait bounds were not satisfied:
+            `IpAddr: sqlx::Decode<'_, Postgres>`
+            which is required by `AuditLog: FromRow<'r, PgRow>`
+            `IpAddr: Type<Postgres>`
+            which is required by `AuditLog: FromRow<'r, PgRow>`
+
+Some errors have detailed explanations: E0061, E0277, E0308, E0412, E0432, E0599.
+For more information about an error, try `rustc --explain E0061`.
+error: could not compile `audit` (lib) due to 23 previous errors

@@ -47,6 +47,14 @@ async fn main() -> Result<()> {
     info!("Database pool initialized");
     info!("Redis connection established");
 
+    // Run database migrations
+    info!("Running database migrations...");
+    sqlx::migrate!("../../migrations")
+        .run(&state.db)
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to run migrations: {}", e))?;
+    info!("Migrations completed successfully");
+
     // Build router
     let app = Router::new()
         // OAuth 2.1 / OIDC endpoints

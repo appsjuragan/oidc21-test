@@ -1,8 +1,10 @@
 use axum::{
     extract::State,
     http::{header, StatusCode},
-    Json, TypedHeader,
+    Json,
 };
+use axum_extra::TypedHeader;
+use axum_extra::headers::{Authorization, authorization::Bearer};
 use serde::{Deserialize, Serialize};
 
 use crate::{error::{AppError, AppResult}, state::AppState};
@@ -44,7 +46,7 @@ pub struct UserInfoResponse {
 /// for scopes granted in the access token
 pub async fn userinfo(
     State(state): State<AppState>,
-    TypedHeader(authorization): TypedHeader<header::Authorization<header::Bearer>>,
+    TypedHeader(authorization): TypedHeader<Authorization<Bearer>>,
 ) -> AppResult<Json<UserInfoResponse>> {
     let access_token = authorization.token();
 
