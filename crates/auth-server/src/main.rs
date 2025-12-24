@@ -42,7 +42,7 @@ async fn main() -> Result<()> {
     info!("Server base URL: {}", config.server.base_url);
 
     // Initialize application state
-    let state = AppState::new(config).await?;
+    let state = AppState::new(config.clone()).await?;
     
     info!("Database pool initialized");
     info!("Redis connection established");
@@ -82,7 +82,9 @@ async fn main() -> Result<()> {
         .with_state(state);
 
     // Start server
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
+    let host = config.server.host.parse::<std::net::IpAddr>()
+        .map_err(|_| anyhow::anyhow!("Invalid host address: {}", config.server.host))?;
+    let addr = SocketAddr::new(host, config.server.port);
     info!("Listening on {}", addr);
     
     let listener = tokio::net::TcpListener::bind(addr).await?;

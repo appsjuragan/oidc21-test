@@ -41,10 +41,10 @@ argon2 = "0.5"
 sha2 = "0.10"
 base64 = "0.21"
 ring = "0.17"
-rand = "0.8"
+rand = "0.8.5"
 
 # UUID and time
-uuid = { version = "1.6", features = ["v4", "serde"] }
+uuid = { version = "1.11.0", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 
 # Validation

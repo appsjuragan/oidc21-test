@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, Json};
+use axum::{extract::State, Json};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use sqlx::Row;
@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::{authz_code::AuthCodeRepository, error::{AppError, AppResult}, state::AppState};
 use authentication::verify_password;
-use audit::{ AuditLogger, EventType};
+use audit::AuditLogger;
 use clients::ClientRepository;
 use security::{create_access_token, generate_refresh_token};
 

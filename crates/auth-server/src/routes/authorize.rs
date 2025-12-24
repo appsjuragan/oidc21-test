@@ -1,5 +1,5 @@
 use axum::{extract::{Query, State}, response::Redirect};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use validator::Validate;
 
 use crate::{error::AppResult, state::AppState};

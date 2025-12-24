@@ -167,7 +167,7 @@ impl SessionManager {
         let remaining_seconds = (session.expires_at - Utc::now()).num_seconds();
         if remaining_seconds > 0 {
             self.redis
-                .set_ex(&session_key, session_json, remaining_seconds as u64)
+                .set_ex::<_, _, ()>(&session_key, session_json, remaining_seconds as u64)
                 .await?;
         }
 
@@ -183,11 +183,11 @@ impl SessionManager {
         if let Some(json) = session_json {
              if let Ok(session) = serde_json::from_str::<Session>(&json) {
                  let user_sessions_key = format!("user_sessions:{}", session.user_id);
-                 self.redis.srem(&user_sessions_key, session_token).await?;
+                 self.redis.srem::<_, _, ()>(&user_sessions_key, session_token).await?;
              }
         }
 
-        self.redis.del(&session_key).await?;
+        self.redis.del::<_, ()>(&session_key).await?;
         
         Ok(())
     }
@@ -200,10 +200,10 @@ impl SessionManager {
         
         for token in session_tokens {
             let session_key = format!("session:{}", token);
-            self.redis.del(&session_key).await?;
+            self.redis.del::<_, ()>(&session_key).await?;
         }
         
-        self.redis.del(&user_sessions_key).await?;
+        self.redis.del::<_, ()>(&user_sessions_key).await?;
         
         Ok(())
     }

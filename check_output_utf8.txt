@@ -1,0 +1,200 @@
+warning: unused import: `base64::Engine`
+ --> crates\authentication\src\mfa.rs:2:5
+  |
+2 | use base64::Engine;
+  |     ^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:157:5
+    |
+157 |     pub async fn touch_session(&mut self, session_token: &str) -> Result<(), SessionError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:170:18
+    |
+170 |                 .set_ex(&session_key, session_json, remaining_seconds as u64)
+    |                  ^^^^^^
+    = note: `#[warn(dependency_on_unit_never_type_fallback)]` (part of `#[warn(rust_2024_compatibility)]`) on by default
+help: use `()` annotations to avoid fallback changes
+    |
+170 |                 .set_ex::<_, _, ()>(&session_key, session_json, remaining_seconds as u64)
+    |                        ++++++++++++
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:178:5
+    |
+178 |     pub async fn delete_session(&mut self, session_token: &str) -> Result<(), SessionError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:186:29
+    |
+186 |                  self.redis.srem(&user_sessions_key, session_token).await?;
+    |                             ^^^^
+help: use `()` annotations to avoid fallback changes
+    |
+186 ~                  self.redis.srem::<_, _, ()>(&user_sessions_key, session_token).await?;
+187 |              }
+188 |         }
+189 |
+190 ~         self.redis.del::<_, ()>(&session_key).await?;
+    |
+
+warning: this function depends on never type fallback being `()`
+   --> crates\authentication\src\session.rs:196:5
+    |
+196 |     pub async fn delete_all_user_sessions(&mut self, user_id: Uuid) -> Result<(), SessionError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>
+    = help: specify the types explicitly
+note: in edition 2024, the requirement `!: FromRedisValue` will fail
+   --> crates\authentication\src\session.rs:203:24
+    |
+203 |             self.redis.del(&session_key).await?;
+    |                        ^^^
+help: use `()` annotations to avoid fallback changes
+    |
+203 ~             self.redis.del::<_, ()>(&session_key).await?;
+204 |         }
+205 |         
+206 ~         self.redis.del::<_, ()>(&user_sessions_key).await?;
+    |
+
+warning: `authentication` (lib) generated 4 warnings (run `cargo fix --lib -p authentication` to apply 4 suggestions)
+    Checking auth-server v0.1.0 (D:\projects\rust-oidc-sso\crates\auth-server)
+warning: unused import: `Serialize`
+ --> crates\auth-server\src\routes\authorize.rs:2:26
+  |
+2 | use serde::{Deserialize, Serialize};
+  |                          ^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `http::StatusCode`
+ --> crates\auth-server\src\routes\token.rs:1:28
+  |
+1 | use axum::{extract::State, http::StatusCode, Json};
+  |                            ^^^^^^^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\token.rs:9:27
+  |
+9 | use audit::{ AuditLogger, EventType};
+  |                           ^^^^^^^^^
+
+warning: unused imports: `StatusCode` and `header`
+ --> crates\auth-server\src\routes\userinfo.rs:3:12
+  |
+3 |     http::{header, StatusCode},
+  |            ^^^^^^  ^^^^^^^^^^
+
+warning: unused import: `std::net::IpAddr`
+ --> crates\auth-server\src\routes\login.rs:3:5
+  |
+3 | use std::net::IpAddr;
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused import: `uuid::Uuid`
+ --> crates\auth-server\src\routes\login.rs:4:5
+  |
+4 | use uuid::Uuid;
+  |     ^^^^^^^^^^
+
+warning: unused import: `EventType`
+ --> crates\auth-server\src\routes\login.rs:7:26
+  |
+7 | use audit::{AuditLogger, EventType};
+  |                          ^^^^^^^^^
+
+warning: unused import: `authorize::*`
+  --> crates\auth-server\src\routes\mod.rs:12:9
+   |
+12 | pub use authorize::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `token::*`
+  --> crates\auth-server\src\routes\mod.rs:13:9
+   |
+13 | pub use token::*;
+   |         ^^^^^^^^
+
+warning: unused import: `userinfo::*`
+  --> crates\auth-server\src\routes\mod.rs:14:9
+   |
+14 | pub use userinfo::*;
+   |         ^^^^^^^^^^^
+
+warning: unused import: `jwks::*`
+  --> crates\auth-server\src\routes\mod.rs:15:9
+   |
+15 | pub use jwks::*;
+   |         ^^^^^^^
+
+warning: unused import: `discovery::*`
+  --> crates\auth-server\src\routes\mod.rs:16:9
+   |
+16 | pub use discovery::*;
+   |         ^^^^^^^^^^^^
+
+warning: unused import: `revoke::*`
+  --> crates\auth-server\src\routes\mod.rs:17:9
+   |
+17 | pub use revoke::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `introspect::*`
+  --> crates\auth-server\src\routes\mod.rs:18:9
+   |
+18 | pub use introspect::*;
+   |         ^^^^^^^^^^^^^
+
+warning: unused import: `health::*`
+  --> crates\auth-server\src\routes\mod.rs:19:9
+   |
+19 | pub use health::*;
+   |         ^^^^^^^^^
+
+warning: unused import: `login::*`
+  --> crates\auth-server\src\routes\mod.rs:20:9
+   |
+20 | pub use login::*;
+   |         ^^^^^^^^
+
+error[E0382]: use of moved value: `config`
+  --> crates\auth-server\src\main.rs:87:38
+   |
+39 |     let config = Config::load()?;
+   |         ------ move occurs because `config` has type `config::Config`, which does not implement the `Copy` trait
+...
+45 |     let state = AppState::new(config).await?;
+   |                               ------ value moved here
+...
+87 |     let addr = SocketAddr::new(host, config.server.port);
+   |                                      ^^^^^^^^^^^^^^^^^^ value used here after move
+   |
+note: consider changing this parameter type in method `new` to borrow instead if owning the value isn't necessary
+  --> crates\auth-server\src\state.rs:17:30
+   |
+17 |     pub async fn new(config: Config) -> Result<Self> {
+   |                  ---         ^^^^^^ this parameter takes ownership of the value
+   |                  |
+   |                  in this method
+help: consider cloning the value if the performance cost is acceptable
+   |
+45 |     let state = AppState::new(config.clone()).await?;
+   |                                     ++++++++
+
+For more information about this error, try `rustc --explain E0382`.
+warning: `auth-server` (bin "auth-server") generated 16 warnings
+error: could not compile `auth-server` (bin "auth-server") due to 1 previous error; 16 warnings emitted
