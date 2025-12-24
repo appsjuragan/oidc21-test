@@ -8,13 +8,4 @@ pub mod introspect;
 pub mod health;
 pub mod login;
 
-// Re-export for convenience
-pub use authorize::*;
-pub use token::*;
-pub use userinfo::*;
-pub use jwks::*;
-pub use discovery::*;
-pub use revoke::*;
-pub use introspect::*;
-pub use health::*;
-pub use login::*;
+// Re-exports are not needed as modules are used directly in main.rs

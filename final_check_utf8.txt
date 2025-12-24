@@ -1,0 +1,147 @@
+warning: field `gdpr` is never read
+  --> crates\auth-server\src\config.rs:14:9
+   |
+ 6 | pub struct Config {
+   |            ------ field in this struct
+...
+14 |     pub gdpr: GdprConfig,
+   |         ^^^^
+   |
+   = note: `Config` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `pool_size` is never read
+  --> crates\auth-server\src\config.rs:34:9
+   |
+32 | pub struct RedisConfig {
+   |            ----------- field in this struct
+33 |     pub url: String,
+34 |     pub pool_size: u32,
+   |         ^^^^^^^^^
+   |
+   = note: `RedisConfig` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `rate_limit_max_requests`, `rate_limit_window_seconds`, `password_min_length`, and `password_max_length` are never read
+  --> crates\auth-server\src\config.rs:57:9
+   |
+56 | pub struct SecurityConfig {
+   |            -------------- fields in this struct
+57 |     pub rate_limit_max_requests: u64,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+58 |     pub rate_limit_window_seconds: u64,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+59 |     /// OWASP ASVS 2.1.1: Minimum 12 characters
+60 |     pub password_min_length: usize,
+   |         ^^^^^^^^^^^^^^^^^^^
+61 |     pub password_max_length: usize,
+   |         ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `SecurityConfig` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `data_retention_days` and `audit_log_retention_days` are never read
+  --> crates\auth-server\src\config.rs:76:9
+   |
+75 | pub struct GdprConfig {
+   |            ---------- fields in this struct
+76 |     pub data_retention_days: i64,
+   |         ^^^^^^^^^^^^^^^^^^^
+77 |     pub audit_log_retention_days: i64,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `GdprConfig` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `client_id`, `scope`, `state`, `code_challenge`, and `nonce` are never read
+  --> crates\auth-server\src\routes\authorize.rs:15:9
+   |
+10 | pub struct AuthorizationRequest {
+   |            -------------------- fields in this struct
+...
+15 |     pub client_id: String,
+   |         ^^^^^^^^^
+...
+22 |     pub scope: Option<String>,
+   |         ^^^^^
+...
+25 |     pub state: Option<String>,
+   |         ^^^^^
+...
+28 |     pub code_challenge: String,
+   |         ^^^^^^^^^^^^^^
+...
+34 |     pub nonce: Option<String>,
+   |         ^^^^^
+   |
+   = note: `AuthorizationRequest` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `token` and `token_type_hint` are never read
+  --> crates\auth-server\src\routes\revoke.rs:9:9
+   |
+ 8 | pub struct RevokeRequest {
+   |            ------------- fields in this struct
+ 9 |     pub token: String,
+   |         ^^^^^
+10 |     pub token_type_hint: Option<String>, // "access_token" or "refresh_token"
+   |         ^^^^^^^^^^^^^^^
+   |
+   = note: `RevokeRequest` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `token` and `token_type_hint` are never read
+  --> crates\auth-server\src\routes\introspect.rs:9:9
+   |
+ 8 | pub struct IntrospectRequest {
+   |            ----------------- fields in this struct
+ 9 |     pub token: String,
+   |         ^^^^^
+10 |     pub token_type_hint: Option<String>,
+   |         ^^^^^^^^^^^^^^^
+   |
+   = note: `IntrospectRequest` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: variants `Forbidden` and `RateLimitExceeded` are never constructed
+  --> crates\auth-server\src\error.rs:24:5
+   |
+10 | pub enum AppError {
+   |          -------- variants in this enum
+...
+24 |     Forbidden(String),
+   |     ^^^^^^^^^
+...
+30 |     RateLimitExceeded,
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = note: `AppError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `id`, `code`, `nonce`, and `created_at` are never read
+  --> crates\auth-server\src\authz_code.rs:28:9
+   |
+27 | pub struct AuthorizationCode {
+   |            ----------------- fields in this struct
+28 |     pub id: Uuid,
+   |         ^^
+29 |     pub code: String,
+   |         ^^^^
+...
+36 |     pub nonce: Option<String>,
+   |         ^^^^^
+...
+39 |     pub created_at: DateTime<Utc>,
+   |         ^^^^^^^^^^
+   |
+   = note: `AuthorizationCode` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: methods `create` and `delete_expired` are never used
+   --> crates\auth-server\src\authz_code.rs:63:18
+    |
+ 47 | impl AuthCodeRepository {
+    | ----------------------- methods in this implementation
+...
+ 63 |     pub async fn create(
+    |                  ^^^^^^
+...
+160 |     pub async fn delete_expired(&self) -> Result<u64, AuthCodeError> {
+    |                  ^^^^^^^^^^^^^^
+
+warning: `auth-server` (bin "auth-server") generated 10 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+warning: the following packages contain code that will be rejected by a future version of Rust: redis v0.24.0, sqlx-postgres v0.7.4
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 5`

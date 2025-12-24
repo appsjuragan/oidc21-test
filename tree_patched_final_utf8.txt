@@ -1,0 +1,5 @@
+    Updating crates.io index
+error: failed to resolve patches for `https://github.com/rust-lang/crates.io-index`
+
+Caused by:
+  patch for `ahash` in `https://github.com/rust-lang/crates.io-index` points to the same source, but patches must point to different sources

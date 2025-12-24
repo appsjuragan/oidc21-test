@@ -1,5 +1,5 @@
 use anyhow::Result;
-use base64::Engine;
+
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, Row};
 use thiserror::Error;

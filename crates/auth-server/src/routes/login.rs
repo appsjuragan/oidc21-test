@@ -1,10 +1,9 @@
 use axum::{extract::State, Json};
 use serde::{Deserialize, Serialize};
-use std::net::IpAddr;
-use uuid::Uuid;
+
 
 use crate::{error::{AppError, AppResult}, state::AppState};
-use audit::{AuditLogger, EventType};
+use audit::AuditLogger;
 use authentication::{
     verify_password, MfaManager, SessionConfig, SessionManager,
 };
